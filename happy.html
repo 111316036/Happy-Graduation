@@ -2,6 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>畢業快樂！</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght=300;400;700&display=swap" rel="stylesheet">
     <style>
@@ -43,31 +44,33 @@
             align-items: center;
             text-align: center;
             color: white;
-            padding: 20px;
+            padding: 15px;
             box-sizing: border-box;
         }
 
         .card-container {
             background: rgba(255, 255, 255, 0.95);
             color: #333;
-            padding: 40px;
+            padding: 30px 20px;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             max-width: 600px;
             width: 100%;
             animation: fadeIn 1.5s ease;
+            box-sizing: border-box;
         }
 
         .card-container h1 {
             color: #2c3e50;
-            margin-bottom: 20px;
-            font-size: 2.5em;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 2.2em;
         }
 
         .card-content {
-            font-size: 1.2em;
-            line-height: 1.8;
-            margin-bottom: 30px;
+            font-size: 1.1em;
+            line-height: 1.7;
+            margin-bottom: 25px;
             text-align: left;
             white-space: pre-line;
         }
@@ -76,12 +79,14 @@
             background-color: #ff7675;
             color: white;
             border: none;
-            padding: 12px 35px;
+            padding: 12px 30px;
             font-size: 1.1em;
             border-radius: 25px;
             cursor: pointer;
             box-shadow: 0 5px 15px rgba(255, 118, 117, 0.4);
             transition: all 0.3s ease;
+            width: 100%;
+            max-width: 280px;
         }
 
         .start-btn:hover {
@@ -92,18 +97,18 @@
         /* 懸浮音樂控制鈕 */
         .music-controls {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 15px;
+            right: 15px;
             z-index: 100000; 
             background: rgba(44, 62, 80, 0.9);
             color: white;
-            padding: 10px 15px;
+            padding: 8px 14px;
             border-radius: 30px;
-            font-size: 0.9em;
+            font-size: 0.85em;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
@@ -115,9 +120,9 @@
         /* =================【照片錦集區外觀優化 - 純相片牆風格】================= */
         .photo-gallery {
             background-color: white;
-            padding: 3em 1em;
-            margin-top: 19px; 
-            margin-bottom: 2em;
+            padding: 2em 1em;
+            margin-top: 10px; 
+            margin-bottom: 1.5em;
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             border-top: 6px solid var(--primary-color); 
@@ -125,16 +130,22 @@
 
         .gallery-title-box {
             text-align: center;
-            padding-bottom: 1.5em;
+            padding-bottom: 1em;
             background: transparent;
         }
 
         .gallery-title-box h2 {
-            font-size: 2.5em;
+            font-size: 2em;
             color: #2c3e50;
-            margin: 0 0 10px 0;
+            margin: 0 0 5px 0;
             padding: 0;
             display: block;
+        }
+
+        .gallery-title-box p {
+            margin: 0;
+            font-size: 0.9em;
+            color: #666;
         }
 
         /* 密鋪照片牆容器 */
@@ -144,51 +155,48 @@
             flex-wrap: wrap;
             justify-content: center;
             align-items: center;
-            gap: 12px; /* 縮小間距，讓照片像附圖一樣緊密 */
-            padding: 20px 5px;
+            gap: 12px; 
+            padding: 15px 0;
             max-width: 100%;
         }
 
-        /* 照片單元：移除外框、移除背景、寬度自適應 */
+        /* 照片單元：預設案桌上型寬度 */
         .gallery-item {
-            background: none;      /* 移除白色底 */
-            padding: 0;            /* 移除內襯 */
-            border-radius: 0;      /* 移除圓角 */
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15); /* 輕微陰影營造相片重疊感 */
-            width: 210px;          /* 設定一個基準寬度 */
+            background: none;      
+            padding: 0;            
+            border-radius: 0;      
+            box-shadow: 0 4px 8px rgba(0,0,0,0.12); 
+            width: 210px;          
             cursor: pointer;
             transition: all 0.3s ease-in-out;
             position: relative;
             z-index: 1;
         }
 
-        /* 讓照片維持原本的長寬比 */
         .gallery-item img {
             width: 100%;
             height: auto;          
             object-fit: contain;
-            display: block;        /* 移除圖片底部空隙 */
+            display: block;        
         }
 
-        /* 隱藏原本顯眼的文字標籤 */
         .gallery-item .photo-caption {
             display: none;
         }
 
-        /* 懸浮在照片上時：稍微放大、變正、移到最上層 */
         .gallery-item:hover {
-            transform: scale(1.1) rotate(0deg) !important;
-            box-shadow: 0 12px 25px rgba(0,0,0,0.3);
+            transform: scale(1.08) rotate(0deg) !important;
+            box-shadow: 0 12px 25px rgba(0,0,0,0.25);
             z-index: 999;
         }
 
-        /* 模擬錯落有致的拼貼感（擴充為 6 組循環，讓 50 張圖看起來更隨機、自然） */
-        .gallery-item:nth-child(6n+1) { transform: rotate(-3deg) translateY(4px); }
-        .gallery-item:nth-child(6n+2) { transform: rotate(2deg) translateY(-6px); }
+        /* 微幅旋轉與上下位移效果 */
+        .gallery-item:nth-child(6n+1) { transform: rotate(-2.5deg) translateY(3px); }
+        .gallery-item:nth-child(6n+2) { transform: rotate(2deg) translateY(-4px); }
         .gallery-item:nth-child(6n+3) { transform: rotate(-1.5deg) translateY(2px); }
-        .gallery-item:nth-child(6n+4) { transform: rotate(3.5deg) translateY(-3px); }
+        .gallery-item:nth-child(6n+4) { transform: rotate(3deg) translateY(-3px); }
         .gallery-item:nth-child(6n+5) { transform: rotate(-2deg) translateY(-1px); }
-        .gallery-item:nth-child(6n+6) { transform: rotate(1.5deg) translateY(5px); }
+        .gallery-item:nth-child(6n+6) { transform: rotate(1.5deg) translateY(4px); }
 
         /* =================【點擊放大燈箱效果 (Lightbox)】================= */
         .lightbox-overlay {
@@ -197,7 +205,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.9);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -214,15 +222,16 @@
 
         .lightbox-content {
             background: white;
-            padding: 15px 15px 25px 15px;
+            padding: 12px 12px 20px 12px;
             border-radius: 8px;
-            max-width: 90%;
-            max-height: 85vh;
+            max-width: 92%;
+            max-height: 80vh;
             text-align: center;
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
             transform: scale(0.8);
             transition: transform 0.3s ease;
             position: relative;
+            box-sizing: border-box;
         }
 
         .lightbox-overlay.active .lightbox-content {
@@ -231,14 +240,14 @@
 
         .lightbox-img {
             max-width: 100%;
-            max-height: 65vh;
+            max-height: 55vh;
             object-fit: contain;
             border-radius: 4px;
         }
 
         .lightbox-caption {
-            margin-top: 15px;
-            font-size: 1.3em;
+            margin-top: 12px;
+            font-size: 1.1em;
             color: #333;
             font-weight: bold;
         }
@@ -248,48 +257,71 @@
             top: -40px;
             right: 0;
             color: white;
-            font-size: 30px;
+            font-size: 32px;
             background: none;
             border: none;
             cursor: pointer;
         }
 
-        /* =================【無敵實心擋板頂部】================= */
+        /* =================【頂部導覽列】================= */
         .top-navbar-shield {
             background-color: #a3cefa !important; 
             color: var(--light-text);
-            padding: 1.5em 0;
+            padding: 1.2em 0;
             text-align: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); 
-            
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.11); 
             position: sticky; 
             top: 0;
             z-index: 99999 !important; 
             width: 100%;
-            overflow: hidden; 
         }
 
         .top-navbar-shield h1 {
             margin: 0;
-            font-size: 2.5em;
+            font-size: 1.8em;
             letter-spacing: 2px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
         }
 
         /* 主要內容容器 */
         main {
             max-width: 1200px; 
             margin: 0 auto;
-            padding: 40px 1em;
+            padding: 15px 10px;
             flex-grow: 1;
-            scroll-margin-top: 160px; 
+            scroll-margin-top: 90px; 
+            box-sizing: border-box;
         }
 
+        /* =================【📱 RWD 手機版寬度極致優化】================= */
         @media (max-width: 768px) {
-            .top-navbar-shield h1 { font-size: 2em; }
-            main { scroll-margin-top: 100px; }
-            .gallery-scatter-container { gap: 6px; } 
-            .gallery-item { width: 45%; } /* 手機雙欄緊密排列 */
+            .card-container h1 { font-size: 1.8em; }
+            .card-content { font-size: 1em; }
+            
+            .top-navbar-shield h1 { font-size: 1.5em; }
+            main { scroll-margin-top: 75px; }
+            
+            /* iPhone直向：照片牆間距縮小，強制呈現漂亮的雙欄拼貼 */
+            .gallery-scatter-container { 
+                gap: 8px; 
+                padding: 10px 2px;
+            } 
+            .gallery-item { 
+                width: calc(50% - 4px); /* 扣除 gap 的一半，完美對分 */
+            }
+            
+            /* 手機版微調旋轉度數，避免照片超出螢幕邊緣 */
+            .gallery-item:nth-child(2n+1) { transform: rotate(-1.5deg) translateY(2px); }
+            .gallery-item:nth-child(2n+2) { transform: rotate(1.5deg) translateY(-2px); }
+            
+            .gallery-title-box h2 { font-size: 1.6em; }
+            
+            /* 音樂按鈕在手機上稍微縮小，避免擋住太多內容 */
+            .music-controls {
+                bottom: 12px;
+                right: 12px;
+                padding: 6px 12px;
+                font-size: 0.8em;
+            }
         }
     </style>
 </head>
@@ -329,213 +361,208 @@
             </div>
             
             <div class="gallery-scatter-container">
-                <!-- 1 ~ 10 -->
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片1">
+                    <img src="assets/picture/zoo1.jpg" alt="回憶照片1">
                     <span class="photo-caption">快樂的校園生活</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片2">
+                    <img src="assets/picture/zoo2.jpg" alt="回憶照片2">
                     <span class="photo-caption">大隊接力比賽</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片3">
+                    <img src="assets/picture/zoo3.jpg" alt="回憶照片3">
                     <span class="photo-caption">一起聚餐聊天</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片4">
+                    <img src="assets/picture/zoo4.jpg" alt="回憶照片4">
                     <span class="photo-caption">畢業典禮當天</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png " alt="回憶照片5">
+                    <img src="assets/picture/vo1.jpg" alt="回憶照片5">
                     <span class="photo-caption">排球聯賽合影</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片6">
+                    <img src="assets/picture/vo2.jpg" alt="回憶照片6">
                     <span class="photo-caption">最後的團體照</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png " alt="回憶照片7">
+                    <img src="assets/picture/pic7.jpg" alt="回憶照片7">
                     <span class="photo-caption">歡樂的慶生驚喜</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片8">
+                    <img src="assets/picture/pic8.jpg" alt="回憶照片8">
                     <span class="photo-caption">圖書館熬夜爆肝</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png  " alt="回憶照片9">
+                    <img src="assets/picture/pic9.jpg" alt="回憶照片9">
                     <span class="photo-caption">午後的校園漫步</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片10">
+                    <img src="assets/picture/pic10.jpg" alt="回憶照片10">
                     <span class="photo-caption">熱血的體育課</span>
                 </div>
 
-                <!-- 11 ~ 20 -->
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片11">
+                    <img src="assets/picture/pic11.jpg" alt="回憶照片11">
                     <span class="photo-caption">分組報告大成功</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片12">
+                    <img src="assets/picture/pic12.jpg" alt="回憶照片12">
                     <span class="photo-caption">冬天的熱可可時光</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片13">
+                    <img src="assets/picture/pic13.jpg" alt="回憶照片13">
                     <span class="photo-caption">校慶園遊會擺攤</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片14">
+                    <img src="assets/picture/pic14.jpg" alt="回憶照片14">
                     <span class="photo-caption">瘋狂的跨年倒數</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片15">
+                    <img src="assets/picture/pic15.jpg" alt="回憶照片15">
                     <span class="photo-caption">期末考完的放空</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片16">
-                    <span class="photo-caption">一起看的第一場雪/雨</span>
+                    <img src="assets/picture/pic16.jpg" alt="回憶照片16">
+                    <span class="photo-caption">一起看的第一場雨</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片17">
+                    <img src="assets/picture/pic17.jpg" alt="回憶照片17">
                     <span class="photo-caption">隨手拍的搞怪日常</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片18">
+                    <img src="assets/picture/pic18.jpg" alt="回憶照片18">
                     <span class="photo-caption">草地上野餐聊天</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片19">
+                    <img src="assets/picture/pic19.jpg" alt="回憶照片19">
                     <span class="photo-caption">實習課的認真模樣</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片20">
+                    <img src="assets/picture/pic20.jpg" alt="回憶照片20">
                     <span class="photo-caption">社團成發留念</span>
                 </div>
 
-                <!-- 21 ~ 30 -->
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片21">
+                    <img src="assets/picture/pic21.jpg" alt="回憶照片21">
                     <span class="photo-caption">畢業學士服初體驗</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片22">
+                    <img src="assets/picture/pic22.jpg" alt="回憶照片22">
                     <span class="photo-caption">走廊上的不期而遇</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片23">
-                    <span class="photo-caption">走廊長椅上的八卦時間</span>
+                    <img src="assets/picture/pic23.jpg" alt="回憶照片23">
+                    <span class="photo-caption">長椅上的八卦時間</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片24">
+                    <img src="assets/picture/pic24.jpg" alt="回憶照片24">
                     <span class="photo-caption">實驗室的爆笑失誤</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片25">
+                    <img src="assets/picture/pic25.jpg" alt="回憶照片25">
                     <span class="photo-caption">迎新晚會的營火</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片26">
+                    <img src="assets/picture/pic26.jpg" alt="回憶照片26">
                     <span class="photo-caption">大雨中的奔跑</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片27">
+                    <img src="assets/picture/pic27.jpg" alt="回憶照片27">
                     <span class="photo-caption">課堂間的瞌睡蟲</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片28">
+                    <img src="assets/picture/pic28.jpg" alt="回憶照片28">
                     <span class="photo-caption">考前抱佛腳衝刺</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片29">
+                    <img src="assets/picture/pic29.jpg" alt="回憶照片29">
                     <span class="photo-caption">開學第一天的合照</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片30">
+                    <img src="assets/picture/pic30.jpg" alt="回憶照片30">
                     <span class="photo-caption">畢業感言錄製中</span>
                 </div>
 
-                <!-- 31 ~ 40 -->
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片31">
+                    <img src="assets/picture/pic31.jpg" alt="回憶照片31">
                     <span class="photo-caption">夕陽下的剪影</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片32">
+                    <img src="assets/picture/pic32.jpg" alt="回憶照片32">
                     <span class="photo-caption">一起去海邊踏浪</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片33">
+                    <img src="assets/picture/pic33.jpg" alt="回憶照片33">
                     <span class="photo-caption">夜市吃貨團出動</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片34">
+                    <img src="assets/picture/pic34.jpg" alt="回憶照片34">
                     <span class="photo-caption">通宵唱歌的清晨</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片35">
+                    <img src="assets/picture/pic35.jpg" alt="回憶照片35">
                     <span class="photo-caption">滿滿的期末筆記</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片36">
+                    <img src="assets/picture/pic36.jpg" alt="回憶照片36">
                     <span class="photo-caption">課後留在教室聊天</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片37">
+                    <img src="assets/picture/pic37.jpg" alt="回憶照片37">
                     <span class="photo-caption">學餐的大合集</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片38">
+                    <img src="assets/picture/pic38.jpg" alt="回憶照片38">
                     <span class="photo-caption">雨天撐傘的背影</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片39">
+                    <img src="assets/picture/pic39.jpg" alt="回憶照片39">
                     <span class="photo-caption">最後一堂通識課</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片40">
+                    <img src="assets/picture/pic40.jpg" alt="回憶照片40">
                     <span class="photo-caption">拍學士照的花絮</span>
                 </div>
 
-                <!-- 41 ~ 50 -->
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片41">
+                    <img src="assets/picture/pic41.jpg" alt="回憶照片41">
                     <span class="photo-caption">一起追的連續劇</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片42">
+                    <img src="assets/picture/pic42.jpg" alt="回憶照片42">
                     <span class="photo-caption">走廊倒影的搞怪照</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片43">
+                    <img src="assets/picture/pic43.jpg" alt="回憶照片43">
                     <span class="photo-caption">突如其來的下午茶</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片44">
+                    <img src="assets/picture/pic44.jpg" alt="回憶照片44">
                     <span class="photo-caption">校園角落的貓咪</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片45">
+                    <img src="assets/picture/pic45.jpg" alt="球場旁的加油吶喊">
                     <span class="photo-caption">球場旁的加油吶喊</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片46">
+                    <img src="assets/picture/pic46.jpg" alt="離校手續辦完的瞬間">
                     <span class="photo-caption">離校手續辦完的瞬間</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片47">
+                    <img src="assets/picture/pic47.jpg" alt="空無一人的教室">
                     <span class="photo-caption">空無一人的教室</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片48">
+                    <img src="assets/picture/pic48.jpg" alt="青春不散的誓言">
                     <span class="photo-caption">青春不散的誓言</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片49">
+                    <img src="assets/picture/pic49.jpg" alt="向未來勇敢招手">
                     <span class="photo-caption">向未來勇敢招手</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/1.png" alt="回憶照片50">
+                    <img src="assets/picture/pic50.jpg" alt="我們畢業啦！">
                     <span class="photo-caption">我們畢業啦！</span>
                 </div>
             </div>
@@ -593,7 +620,6 @@
             lightbox.classList.remove('active');
         }
 
-        // 按下 ESC 鍵也可以關閉放大視窗
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 closeLightbox();
