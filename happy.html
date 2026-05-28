@@ -171,6 +171,8 @@
             transition: all 0.3s ease-in-out;
             position: relative;
             z-index: 1;
+            /* 將照片微幅旋轉效果初始化為正的，不再歪斜 */
+            transform: rotate(0deg) translateY(0px);
         }
 
         .gallery-item img {
@@ -190,13 +192,7 @@
             z-index: 999;
         }
 
-        /* 微幅旋轉與上下位移效果 */
-        .gallery-item:nth-child(6n+1) { transform: rotate(-2.5deg) translateY(3px); }
-        .gallery-item:nth-child(6n+2) { transform: rotate(2deg) translateY(-4px); }
-        .gallery-item:nth-child(6n+3) { transform: rotate(-1.5deg) translateY(2px); }
-        .gallery-item:nth-child(6n+4) { transform: rotate(3deg) translateY(-3px); }
-        .gallery-item:nth-child(6n+5) { transform: rotate(-2deg) translateY(-1px); }
-        .gallery-item:nth-child(6n+6) { transform: rotate(1.5deg) translateY(4px); }
+        /* 已移除原有的 nth-child 隨機旋轉與位移效果，讓照片全部對齊變正 */
 
         /* =================【點擊放大燈箱效果 (Lightbox)】================= */
         .lightbox-overlay {
@@ -238,7 +234,7 @@
             transform: scale(1);
         }
 
-        .lightbox-img {
+        .lightbox-img, .lightbox-video {
             max-width: 100%;
             max-height: 55vh;
             object-fit: contain;
@@ -292,6 +288,70 @@
             box-sizing: border-box;
         }
 
+        /* =================【加強樣式：新增的影片區區塊外觀】================= */
+        .video-gallery {
+            background-color: white;
+            padding: 2em 1em;
+            margin-top: 30px; 
+            margin-bottom: 1.5em;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-top: 6px solid var(--primary-color); 
+        }
+
+        .video-grid-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 20px; 
+            padding: 15px 0;
+            max-width: 100%;
+        }
+
+        .video-item-box {
+            width: 240px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .video-item-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            cursor: pointer;
+            background: #000;
+            display: flex;
+            align-items: center;
+        }
+
+        .video-wrapper video {
+            width: 100%;
+            height: auto;
+            display: block;
+            pointer-events: none; /* 讓點擊事件穿透到外層容器以觸發燈箱放大 */
+        }
+
+        /* 影片下方的常駐文字備註樣式 */
+        .video-bottom-caption {
+            padding: 10px;
+            font-size: 0.95em;
+            color: #333;
+            font-weight: bold;
+            text-align: center;
+            border-top: 1px solid #eee;
+            background: #fafafa;
+        }
+
         /* =================【📱 RWD 手機版寬度極致優化】================= */
         @media (max-width: 768px) {
             .card-container h1 { font-size: 1.8em; }
@@ -307,14 +367,27 @@
             } 
             .gallery-item { 
                 width: calc(50% - 4px); /* 扣除 gap 的一半，完美對分 */
+                /* 手機版同樣保持正面，不旋轉 */
+                transform: rotate(0deg) translateY(0px);
             }
             
-            /* 手機版微調旋轉度數，避免照片超出螢幕邊緣 */
-            .gallery-item:nth-child(2n+1) { transform: rotate(-1.5deg) translateY(2px); }
-            .gallery-item:nth-child(2n+2) { transform: rotate(1.5deg) translateY(-2px); }
+            /* 已移除手機版的微幅旋轉度數，確保手機上也是正的 */
             
             .gallery-title-box h2 { font-size: 1.6em; }
             
+            /* 手機版影片改為雙欄排版，好讀不突兀 */
+            .video-grid-container {
+                gap: 10px;
+                padding: 10px 2px;
+            }
+            .video-item-box {
+                width: calc(50% - 5px);
+            }
+            .video-bottom-caption {
+                font-size: 0.85em;
+                padding: 6px;
+            }
+
             /* 音樂按鈕在手機上稍微縮小，避免擋住太多內容 */
             .music-controls {
                 bottom: 12px;
@@ -327,12 +400,14 @@
 </head>
 <body>
 
+    <!-- 背景音樂路徑 assets/music.mp3 -->
     <audio id="bgMusic" loop>
-        <source src="assets/music/music.mp3.mp3" type="audio/mpeg">
+        <source src="assets/music.mp3" type="audio/mpeg">
     </audio>
 
+    <!-- 預設文字改為播放中，方便使用者滑下來後直接點擊關閉 -->
     <div class="music-controls" id="musicToggleBtn" onclick="toggleMusic()">
-        <span>🎵 背景音樂：關閉</span>
+        <span>🎵 背景音樂：播放中</span>
     </div>
 
     <div class="welcome-card-hero" id="welcomeHero">
@@ -341,11 +416,15 @@
             <div class="card-content">
                 親愛的董董、小貓：
 
-                這兩年過得很爽，
+                這兩年過得太快，
+                好像轉眼你們就要畢業了，
+                有時候會想，如果早點認識你們就好了，
                 你們真的是最佳室友💯
                 有你們在的每一天都非常有趣，
-                因為我們就是四個北七，
-                之後沒有你們要怎麼辦😭😭😭
+                也因為有你們，讓我們在國北過得很安心，
+                宿舍就像第二個家，一回來看到你們就很快樂，
+                之後沒有你們真的不知道該怎麼辦😭😭😭
+                會無比想念你們的喔~~~
             </div>
             <button class="start-btn" onclick="startWebsite()">開啟卡片與回憶 ➔</button>
         </div>
@@ -360,213 +439,384 @@
         <article id="gallery-section" class="photo-gallery">
             <div class="gallery-title-box">
                 <h2>📷 回憶照片牆</h2>
-                <p>（點擊照片可以放大檢視喔！）</p>
             </div>
             
             <div class="gallery-scatter-container">
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/zoo1.jpg" alt="回憶照片1">
-                    <span class="photo-caption">快樂的校園生活</span>
+                    <img src="assets/picture/1.png" alt="回憶照片1">
+                    <span class="photo-caption">董雨靜八加九</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/zoo2.jpg" alt="回憶照片2">
-                    <span class="photo-caption">大隊接力比賽</span>
+                    <img src="assets/picture/2.jpg" alt="回憶照片2">
+                    <span class="photo-caption"></span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/zoo3.jpg" alt="回憶照片3">
-                    <span class="photo-caption">一起聚餐聊天</span>
+                    <img src="assets/picture/3.jpg" alt="回憶照片3">
+                    <span class="photo-caption">小貓大臉 第一次寢聚</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/zoo4.jpg" alt="回憶照片4">
-                    <span class="photo-caption">畢業典禮當天</span>
+                    <img src="assets/picture/4.jpg" alt="回憶照片4">
+                    <span class="photo-caption">謝謝董的歐趴飲料!!!</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/vo1.jpg" alt="回憶照片5">
-                    <span class="photo-caption">排球聯賽合影</span>
+                    <img src="assets/picture/5.jpg" alt="回憶照片5">
+                    <span class="photo-caption">講快點 手很酸ㄟ</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/vo2.jpg" alt="回憶照片6">
-                    <span class="photo-caption">最後的團體照</span>
+                    <img src="assets/picture/6.jpg" alt="回憶照片6">
+                    <span class="photo-caption">聖誕交換禮物!</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic7.jpg" alt="回憶照片7">
-                    <span class="photo-caption">歡樂的慶生驚喜</span>
+                    <img src="assets/picture/7.jpg" alt="回憶照片7">
+                    <span class="photo-caption">聖誕交換禮物!</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic8.jpg" alt="回憶照片8">
-                    <span class="photo-caption">圖書館熬夜爆肝</span>
+                    <img src="assets/picture/8.jpg" alt="回憶照片8">
+                    <span class="photo-caption">小貓22歲生日快樂</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic9.jpg" alt="回憶照片9">
-                    <span class="photo-caption">午後的校園漫步</span>
+                    <img src="assets/picture/9.jpg" alt="回憶照片9">
+                    <span class="photo-caption">好ㄘ</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic10.jpg" alt="回憶照片10">
-                    <span class="photo-caption">熱血的體育課</span>
-                </div>
-
-                <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic11.jpg" alt="回憶照片11">
-                    <span class="photo-caption">分組報告大成功</span>
-                </div>
-                <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic12.jpg" alt="回憶照片12">
-                    <span class="photo-caption">冬天的熱可可時光</span>
-                </div>
-                <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic13.jpg" alt="回憶照片13">
-                    <span class="photo-caption">校慶園遊會擺攤</span>
-                </div>
-                <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic14.jpg" alt="回憶照片14">
-                    <span class="photo-caption">瘋狂的跨年倒數</span>
-                </div>
-                <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic15.jpg" alt="回憶照片15">
-                    <span class="photo-caption">期末考完的放空</span>
-                </div>
-                <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic16.jpg" alt="回憶照片16">
-                    <span class="photo-caption">一起看的第一場雨</span>
-                </div>
-                <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic17.jpg" alt="回憶照片17">
-                    <span class="photo-caption">隨手拍的搞怪日常</span>
-                </div>
-                <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic18.jpg" alt="回憶照片18">
-                    <span class="photo-caption">草地上野餐聊天</span>
-                </div>
-                <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic19.jpg" alt="回憶照片19">
-                    <span class="photo-caption">實習課的認真模樣</span>
-                </div>
-                <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic20.jpg" alt="回憶照片20">
-                    <span class="photo-caption">社團成發留念</span>
+                    <img src="assets/picture/10.jpg" alt="回憶照片10">
+                    <span class="photo-caption">以後運動會就不用玩了!但要帶小朋友玩</span>
                 </div>
 
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic21.jpg" alt="回憶照片21">
-                    <span class="photo-caption">畢業學士服初體驗</span>
+                    <img src="assets/picture/11.jpg" alt="回憶照片11">
+                    <span class="photo-caption">又睡到中午</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic22.jpg" alt="回憶照片22">
-                    <span class="photo-caption">走廊上的不期而遇</span>
+                    <img src="assets/picture/12.jpg" alt="回憶照片12">
+                    <span class="photo-caption">要畢業啦!</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic23.jpg" alt="回憶照片23">
-                    <span class="photo-caption">長椅上的八卦時間</span>
+                    <img src="assets/picture/13.jpg" alt="回憶照片13">
+                    <span class="photo-caption">感覺身高差了30公分</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic24.jpg" alt="回憶照片24">
-                    <span class="photo-caption">實驗室的爆笑失誤</span>
+                    <img src="assets/picture/14.jpg" alt="回憶照片14">
+                    <span class="photo-caption">累鼠</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic25.jpg" alt="回憶照片25">
-                    <span class="photo-caption">迎新晚會的營火</span>
+                    <img src="assets/picture/15.jpg" alt="回憶照片15">
+                    <span class="photo-caption"></span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic26.jpg" alt="回憶照片26">
-                    <span class="photo-caption">大雨中的奔跑</span>
+                    <img src="assets/picture/16.jpg" alt="回憶照片16">
+                    <span class="photo-caption">林昱欣最後一次表演啦</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic27.jpg" alt="回憶照片27">
-                    <span class="photo-caption">課堂間的瞌睡蟲</span>
+                    <img src="assets/picture/17.jpg" alt="回憶照片17">
+                    <span class="photo-caption">可可愛愛</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic28.jpg" alt="回憶照片28">
-                    <span class="photo-caption">考前抱佛腳衝刺</span>
+                    <img src="assets/picture/18.jpg" alt="回憶照片18">
+                    <span class="photo-caption">謝向芊那什麼臉</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic29.jpg" alt="回憶照片29">
-                    <span class="photo-caption">開學第一天的合照</span>
+                    <img src="assets/picture/19.jpg" alt="回憶照片19">
+                    <span class="photo-caption">大吃一口</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic30.jpg" alt="回憶照片30">
-                    <span class="photo-caption">畢業感言錄製中</span>
-                </div>
-
-                <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic31.jpg" alt="回憶照片31">
-                    <span class="photo-caption">夕陽下的剪影</span>
-                </div>
-                <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic32.jpg" alt="回憶照片32">
-                    <span class="photo-caption">一起去海邊踏浪</span>
-                </div>
-                <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic33.jpg" alt="回憶照片33">
-                    <span class="photo-caption">夜市吃貨團出動</span>
-                </div>
-                <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic34.jpg" alt="回憶照片34">
-                    <span class="photo-caption">通宵唱歌的清晨</span>
-                </div>
-                <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic35.jpg" alt="回憶照片35">
-                    <span class="photo-caption">滿滿的期末筆記</span>
-                </div>
-                <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic36.jpg" alt="回憶照片36">
-                    <span class="photo-caption">課後留在教室聊天</span>
-                </div>
-                <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic37.jpg" alt="回憶照片37">
-                    <span class="photo-caption">學餐的大合集</span>
-                </div>
-                <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic38.jpg" alt="回憶照片38">
-                    <span class="photo-caption">雨天撐傘的背影</span>
-                </div>
-                <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic39.jpg" alt="回憶照片39">
-                    <span class="photo-caption">最後一堂通識課</span>
-                </div>
-                <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic40.jpg" alt="回憶照片40">
-                    <span class="photo-caption">拍學士照的花絮</span>
+                    <img src="assets/picture/20.jpg" alt="回憶照片20">
+                    <span class="photo-caption">祝兩位小學老師都遇到天使學生</span>
                 </div>
 
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic41.jpg" alt="回憶照片41">
-                    <span class="photo-caption">一起追的連續劇</span>
+                    <img src="assets/picture/21.jpg" alt="回憶照片21">
+                    <span class="photo-caption">祝兩位小學老師都遇到天使家長</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic42.jpg" alt="回憶照片42">
-                    <span class="photo-caption">走廊倒影的搞怪照</span>
+                    <img src="assets/picture/22.jpg" alt="回憶照片22">
+                    <span class="photo-caption">遇到煩惱可以來找我們抱怨喔!</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic43.jpg" alt="回憶照片43">
-                    <span class="photo-caption">突如其來的下午茶</span>
+                    <img src="assets/picture/23.jpg" alt="回憶照片23">
+                    <span class="photo-caption">真可愛</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic44.jpg" alt="回憶照片44">
-                    <span class="photo-caption">校園角落的貓咪</span>
+                    <img src="assets/picture/24.jpg" alt="回憶照片24">
+                    <span class="photo-caption">第一次拍貼</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic45.jpg" alt="球場旁的加油吶喊">
-                    <span class="photo-caption">球場旁的加油吶喊</span>
+                    <img src="assets/picture/25.jpg" alt="回憶照片25">
+                    <span class="photo-caption">會想念你們的</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic46.jpg" alt="離校手續辦完的瞬間">
-                    <span class="photo-caption">離校手續辦完的瞬間</span>
+                    <img src="assets/picture/26.jpg" alt="回憶照片26">
+                    <span class="photo-caption">要一直笑得這麼開心</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic47.jpg" alt="空無一人的教室">
-                    <span class="photo-caption">空無一人的教室</span>
+                    <img src="assets/picture/27.jpg" alt="回憶照片27">
+                    <span class="photo-caption">這怎麼拍成這樣</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic48.jpg" alt="青春不散的誓言">
-                    <span class="photo-caption">青春不散的誓言</span>
+                    <img src="assets/picture/28.jpg" alt="回憶照片28">
+                    <span class="photo-caption">小貓又是什麼臉</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic49.jpg" alt="向未來勇敢招手">
-                    <span class="photo-caption">向未來勇敢招手</span>
+                    <img src="assets/picture/29.jpg" alt="回憶照片29">
+                    <span class="photo-caption">傘蜥蜴</span>
                 </div>
                 <div class="gallery-item" onclick="openLightbox(this)">
-                    <img src="assets/picture/pic50.jpg" alt="我們畢業啦！">
-                    <span class="photo-caption">我們畢業啦！</span>
+                    <img src="assets/picture/30.jpg" alt="回憶照片30">
+                    <span class="photo-caption">2208 NO.1</span>
+                </div>
+
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="assets/picture/31.jpg" alt="回憶照片31">
+                    <span class="photo-caption">活人微死</span>
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="assets/picture/32.jpg" alt="回憶照片32">
+                    <span class="photo-caption">兩個小學生</span>
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="assets/picture/33.jpg" alt="回憶照片33">
+                    <span class="photo-caption"></span>
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="assets/picture/34.jpg" alt="回憶照片34">
+                    <span class="photo-caption">畢業快樂</span>
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="assets/picture/35.jpg" alt="回憶照片35">
+                    <span class="photo-caption">小飛俠?</span>
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="assets/picture/36.jpg" alt="回憶照片36">
+                    <span class="photo-caption">排球褲借多久啊</span>
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="assets/picture/37.jpg" alt="回憶照片37">
+                    <span class="photo-caption"></span>
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="assets/picture/38.jpg" alt="回憶照片38">
+                    <span class="photo-caption">為了拍一個生日照真是辛苦你了</span>
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="assets/picture/39.jpg" alt="回憶照片39">
+                    <span class="photo-caption">幫小貓搬家</span>
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="assets/picture/40.jpg" alt="回憶照片40">
+                    <span class="photo-caption">時間過得真快 轉眼你們就要畢業了</span>
+                </div>
+
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="assets/picture/41.jpg" alt="回憶照片41">
+                    <span class="photo-caption"></span>
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="assets/picture/42.jpg" alt="回憶照片42">
+                    <span class="photo-caption"></span>
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="assets/picture/43.jpg" alt="回憶照片43">
+                    <span class="photo-caption"></span>
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="assets/picture/44.jpg" alt="回憶照片44">
+                    <span class="photo-caption"></span>
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="assets/picture/45.jpg" alt="球場旁的加油吶喊">
+                    <span class="photo-caption">火鍋大富翁!</span>
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="assets/picture/46.jpg" alt="離校手續辦完的瞬間">
+                    <span class="photo-caption">三太子</span>
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="assets/picture/47.jpg" alt="空無一人的教室">
+                    <span class="photo-caption">鐵達尼號</span>
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="assets/picture/48.jpg" alt="青春不散的誓言">
+                    <span class="photo-caption">還不想要你們畢業......</span>
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="assets/picture/49.jpg" alt="向未來勇敢招手">
+                    <span class="photo-caption"></span>
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="assets/picture/50.jpg" alt="我們畢業啦！">
+                    <span class="photo-caption">畢業啦!</span>
+                </div>
+            </div>
+        </article>
+
+        <!-- =================【🎬 動態回憶影片區】================= -->
+        <article id="video-section" class="video-gallery">
+            <div class="gallery-title-box">
+                <h2>🎬影片回憶區</h2>
+            </div>
+            
+            <div class="video-grid-container">
+                <div class="video-item-box">
+                    <div class="video-wrapper" onclick="openVideoLightbox('assets/videos/1.mp4', '精彩動態回憶 1')">
+                        <video src="assets/videos/1.mp4" preload="metadata"></video>
+                    </div>
+                    <div class="video-bottom-caption">精彩動態回憶 1</div>
+                </div>
+                <div class="video-item-box">
+                    <div class="video-wrapper" onclick="openVideoLightbox('assets/videos/2.mp4', '精彩動態回憶 2')">
+                        <video src="assets/videos/2.mp4" preload="metadata"></video>
+                    </div>
+                    <div class="video-bottom-caption">精彩動態回憶 2</div>
+                </div>
+                <div class="video-item-box">
+                    <div class="video-wrapper" onclick="openVideoLightbox('assets/videos/3.mp4', '精彩動態回憶 3')">
+                        <video src="assets/videos/3.mp4" preload="metadata"></video>
+                    </div>
+                    <div class="video-bottom-caption">精彩動態回憶 3</div>
+                </div>
+                <div class="video-item-box">
+                    <div class="video-wrapper" onclick="openVideoLightbox('assets/videos/4.mp4', '精彩動態回憶 4')">
+                        <video src="assets/videos/4.mp4" preload="metadata"></video>
+                    </div>
+                    <div class="video-bottom-caption">精彩動態回憶 4</div>
+                </div>
+                <div class="video-item-box">
+                    <div class="video-wrapper" onclick="openVideoLightbox('assets/videos/5.mp4', '精彩動態回憶 5')">
+                        <video src="assets/videos/5.mp4" preload="metadata"></video>
+                    </div>
+                    <div class="video-bottom-caption">國北數資系謝向芊搬家全過程</div>
+                </div>
+                <div class="video-item-box">
+                    <div class="video-wrapper" onclick="openVideoLightbox('assets/videos/6.mp4', '精彩動態回憶 6')">
+                        <video src="assets/videos/6.mp4" preload="metadata"></video>
+                    </div>
+                    <div class="video-bottom-caption">精彩動態回憶 6</div>
+                </div>
+                <div class="video-item-box">
+                    <div class="video-wrapper" onclick="openVideoLightbox('assets/videos/7.mp4', '精彩動態回憶 7')">
+                        <video src="assets/videos/7.mp4" preload="metadata"></video>
+                    </div>
+                    <div class="video-bottom-caption">精彩動態回憶 7</div>
+                </div>
+                <div class="video-item-box">
+                    <div class="video-wrapper" onclick="openVideoLightbox('assets/videos/8.mp4', '精彩動態回憶 8')">
+                        <video src="assets/videos/8.mp4" preload="metadata"></video>
+                    </div>
+                    <div class="video-bottom-caption">精彩動態回憶 8</div>
+                </div>
+                <div class="video-item-box">
+                    <div class="video-wrapper" onclick="openVideoLightbox('assets/videos/9.mp4', '精彩動態回憶 9')">
+                        <video src="assets/videos/9.mp4" preload="metadata"></video>
+                    </div>
+                    <div class="video-bottom-caption">精彩動態回憶 9</div>
+                </div>
+                <div class="video-item-box">
+                    <div class="video-wrapper" onclick="openVideoLightbox('assets/videos/10.mp4', '精彩動態回憶 10')">
+                        <video src="assets/videos/10.mp4" preload="metadata"></video>
+                    </div>
+                    <div class="video-bottom-caption">精彩動態回憶 10</div>
+                </div>
+                <div class="video-item-box">
+                    <div class="video-wrapper" onclick="openVideoLightbox('assets/videos/11.mp4', '精彩動態回憶 11')">
+                        <video src="assets/videos/11.mp4" preload="metadata"></video>
+                    </div>
+                    <div class="video-bottom-caption">精彩動態回憶 11</div>
+                </div>
+                <div class="video-item-box">
+                    <div class="video-wrapper" onclick="openVideoLightbox('assets/videos/12.mp4', '精彩動態回憶 12')">
+                        <video src="assets/videos/12.mp4" preload="metadata"></video>
+                    </div>
+                    <div class="video-bottom-caption">精彩動態回憶 12</div>
+                </div>
+                <div class="video-item-box">
+                    <div class="video-wrapper" onclick="openVideoLightbox('assets/videos/13.MP4', '精彩動態回憶 13')">
+                        <video src="assets/videos/13.MP4" preload="metadata"></video>
+                    </div>
+                    <div class="video-bottom-caption">生日大大大禮物</div>
+                </div>
+                <div class="video-item-box">
+                    <div class="video-wrapper" onclick="openVideoLightbox('assets/videos/14.MOV', '精彩動態回憶 14')">
+                        <video src="assets/videos/14.MOV" preload="metadata"></video>
+                    </div>
+                    <div class="video-bottom-caption">驚!國北數資兩人親口承認"我是XX"</div>
+                </div>
+                <div class="video-item-box">
+                    <div class="video-wrapper" onclick="openVideoLightbox('assets/videos/16.MP4', '精彩動態回憶 16')">
+                        <video src="assets/videos/16.MP4" preload="metadata"></video>
+                    </div>
+                    <div class="video-bottom-caption">精彩動態回憶 16</div>
+                </div>
+                <div class="video-item-box">
+                    <div class="video-wrapper" onclick="openVideoLightbox('assets/videos/17.MOV', '精彩動態回憶 17')">
+                        <video src="assets/videos/17.MOV" preload="metadata"></video>
+                    </div>
+                    <div class="video-bottom-caption">精彩動態回憶 17</div>
+                </div>
+                <div class="video-item-box">
+                    <div class="video-wrapper" onclick="openVideoLightbox('assets/videos/18.MOV', '精彩動態回憶 18')">
+                        <video src="assets/videos/18.MOV" preload="metadata"></video>
+                    </div>
+                    <div class="video-bottom-caption">精彩動態回憶 18</div>
+                </div>
+                <div class="video-item-box">
+                    <div class="video-wrapper" onclick="openVideoLightbox('assets/videos/19.MOV', '精彩動態回憶 19')">
+                        <video src="assets/videos/19.MOV" preload="metadata"></video>
+                    </div>
+                    <div class="video-bottom-caption">憾 最後一年運動會 大四生熱血最後一次</div>
+                </div>
+                <div class="video-item-box">
+                    <div class="video-wrapper" onclick="openVideoLightbox('assets/videos/20.MOV', '精彩動態回憶 20')">
+                        <video src="assets/videos/20.MOV" preload="metadata"></video>
+                    </div>
+                    <div class="video-bottom-caption">大ㄐㄐ</div>
+                </div>
+                <div class="video-item-box">
+                    <div class="video-wrapper" onclick="openVideoLightbox('assets/videos/21.MOV', '精彩動態回憶 21')">
+                        <video src="assets/videos/21.MOV" preload="metadata"></video>
+                    </div>
+                    <div class="video-bottom-caption">精彩動態回憶 21</div>
+                </div>
+                <div class="video-item-box">
+                    <div class="video-wrapper" onclick="openVideoLightbox('assets/videos/22.MOV', '精彩動態回憶 22')">
+                        <video src="assets/videos/22.MOV" preload="metadata"></video>
+                    </div>
+                    <div class="video-bottom-caption">精彩動態回憶 22</div>
+                </div>
+                <div class="video-item-box">
+                    <div class="video-wrapper" onclick="openVideoLightbox('assets/videos/23.MOV', '精彩動態回憶 23')">
+                        <video src="assets/videos/23.MOV" preload="metadata"></video>
+                    </div>
+                    <div class="video-bottom-caption">椅子挑戰!輸家到底是誰?</div>
+                </div>
+                <div class="video-item-box">
+                    <div class="video-wrapper" onclick="openVideoLightbox('assets/videos/24.MOV', '精彩動態回憶 24')">
+                        <video src="assets/videos/24.MOV" preload="metadata"></video>
+                    </div>
+                    <div class="video-bottom-caption">手心貼手心 一起心電心~</div>
+                </div>
+                <div class="video-item-box">
+                    <div class="video-wrapper" onclick="openVideoLightbox('assets/videos/25.MOV', '精彩動態回憶 25')">
+                        <video src="assets/videos/25.MOV" preload="metadata"></video>
+                    </div>
+                    <div class="video-bottom-caption">陌生女子闖入他人房間 還想四處遊蕩</div>
+                </div>
+                <div class="video-item-box">
+                    <div class="video-wrapper" onclick="openVideoLightbox('assets/videos/26.MOV', '精彩動態回憶 26')">
+                        <video src="assets/videos/26.MOV" preload="metadata"></video>
+                    </div>
+                    <div class="video-bottom-caption">竟成功闖入另一人床位 民眾表示「不堪其擾」</div>
+                </div>
+                <div class="video-item-box">
+                    <div class="video-wrapper" onclick="openVideoLightbox('assets/videos/27.MOV', '精彩動態回憶 27')">
+                        <video src="assets/videos/27.MOV" preload="metadata"></video>
+                    </div>
+                    <div class="video-bottom-caption">片中女子回憶童年記憶 竟造成環境汙染</div>
+                </div>
+                <div class="video-item-box">
+                    <div class="video-wrapper" onclick="openVideoLightbox('assets/videos/28.MP4', '精彩動態回憶 28')">
+                        <video src="assets/videos/28.MP4" preload="metadata"></video>
+                    </div>
+                    <div class="video-bottom-caption">新型毒品?高有165的女子因其產生手指肌無力?</div>
                 </div>
             </div>
         </article>
@@ -576,7 +826,8 @@
     <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox()">
         <div class="lightbox-content" onclick="event.stopPropagation()">
             <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
-            <img class="lightbox-img" id="lightboxImg" src="" alt="放大圖">
+            <img class="lightbox-img" id="lightboxImg" src="" alt="放大圖" style="display:none;">
+            <video class="lightbox-video" id="lightboxVideo" src="" controls autoplay style="display:none; width:100%; height:auto; max-height:55vh;"></video>
             <div class="lightbox-caption" id="lightboxCaption"></div>
         </div>
     </div>
@@ -585,6 +836,7 @@
         const audio = document.getElementById('bgMusic');
         const toggleBtn = document.getElementById('musicToggleBtn');
 
+        // 當點擊開頭封面的「開啟卡片與回憶 ➔」時，網頁預設直接播放音樂
         function startWebsite() {
             audio.play().then(() => {
                 toggleBtn.innerHTML = "<span>🎵 背景音樂：播放中</span>";
@@ -608,19 +860,40 @@
         /* 燈箱控制 JavaScript */
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightboxImg');
+        const lightboxVideo = document.getElementById('lightboxVideo');
         const lightboxCaption = document.getElementById('lightboxCaption');
 
+        // 原本的照片燈箱控制
         function openLightbox(element) {
             const imgSrc = element.querySelector('img').src;
             const captionText = element.querySelector('.photo-caption').innerText;
 
+            lightboxVideo.style.display = 'none'; // 隱藏影片播放器
+            lightboxVideo.removeAttribute('autoplay'); // 移除自動播放
+            lightboxVideo.src = "";                // 清空影片源
+            
             lightboxImg.src = imgSrc;
+            lightboxImg.style.display = 'inline-block'; // 顯示圖片
+            lightboxCaption.innerText = captionText;
+            lightbox.classList.add('active');
+        }
+
+        // 影片燈箱控制：將帶入的路徑副檔名與你的標籤檔案大小寫完全對齊，並啟用原生播放
+        function openVideoLightbox(videoSrc, captionText) {
+            lightboxImg.style.display = 'none'; // 隱藏圖片
+            
+            lightboxVideo.setAttribute('autoplay', 'true'); // 開啟原生自動播放
+            lightboxVideo.src = videoSrc;
+            lightboxVideo.style.display = 'inline-block'; // 顯示影片播放器
             lightboxCaption.innerText = captionText;
             lightbox.classList.add('active');
         }
 
         function closeLightbox() {
             lightbox.classList.remove('active');
+            lightboxVideo.pause(); // 關閉燈箱時，自動暫停放大影片的聲音
+            lightboxVideo.removeAttribute('autoplay'); // 移除自動播放
+            lightboxVideo.src = ""; // 清空影片源以防背後偷跑
         }
 
         document.addEventListener('keydown', function(e) {
